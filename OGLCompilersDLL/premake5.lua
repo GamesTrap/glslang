@@ -12,8 +12,8 @@ project "OGLCompiler"
     filter "system:windows"
         files
         {
-            "%{IncludeDir.OGLCOMPILER}/InitializeDll.cpp",
-            "%{IncludeDir.OGLCOMPILER}/InitializeDll.h"
+            "InitializeDll.cpp",
+            "InitializeDll.h"
         }
 
         defines

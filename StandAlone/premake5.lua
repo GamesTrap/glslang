@@ -11,12 +11,12 @@ project "StandAlone"
 
     files
     {
-        "%{IncludeDir.STANDALONE}/StandAlone.cpp",
-        "%{IncludeDir.STANDALONE}/spirv-remap.cpp",
-        "%{IncludeDir.STANDALONE}/ResourceLimits.cpp",
-        "%{IncludeDir.STANDALONE}/ DirStackFileIncluder.h",
-        "%{IncludeDir.STANDALONE}/ResourceLimits.h",
-        "%{IncludeDir.STANDALONE}/Worklist.h"
+        "StandAlone.cpp",
+        "spirv-remap.cpp",
+        "ResourceLimits.cpp",
+        "DirStackFileIncluder.h",
+        "ResourceLimits.h",
+        "Worklist.h"
     }
 
     defines

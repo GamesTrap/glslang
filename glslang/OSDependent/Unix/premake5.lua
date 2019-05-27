@@ -12,8 +12,8 @@ project "OSDependent"
     filter "system:linux"
       files
       {
-        "%{IncludeDir.OSDEPENDENT}/Unix/ossource.cpp",
-        "%{IncludeDir.OSDEPENDENT}/osinclude.h"
+        "ossource.cpp",
+        "../osinclude.h"
       }
 
       links
@@ -33,8 +33,8 @@ project "OSDependent"
     filter "system:macosx"
       files
       {
-        "%{IncludeDir.OSDEPENDENT}/Unix/ossource.cpp",
-        "%{IncludeDir.OSDEPENDENT}/osinclude.h"
+        "Unix/ossource.cpp",
+        "osinclude.h"
       }
 
       links

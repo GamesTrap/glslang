@@ -11,27 +11,27 @@ project "SPIRV"
 
     files
     {
-        "%{IncludeDir.SPIRV}/GlslangToSpv.cpp",
-        "%{IncludeDir.SPIRV}/InReadableOrder.cpp",
-        "%{IncludeDir.SPIRV}/Logger.cpp",
-        "%{IncludeDir.SPIRV}/SpvBuilder.cpp",
-        "%{IncludeDir.SPIRV}/SpvPostProcess.cpp",
-        "%{IncludeDir.SPIRV}/doc.cpp",
-        "%{IncludeDir.SPIRV}/SpvTools.cpp",
-        "%{IncludeDir.SPIRV}/disassemble.cpp",
-        "%{IncludeDir.SPIRV}/bitutils.h",
-        "%{IncludeDir.SPIRV}/spirv.hpp",
-        "%{IncludeDir.SPIRV}/GLSL.std.450.h",
-        "%{IncludeDir.SPIRV}/GLSL.ext.EXT.h",
-        "%{IncludeDir.SPIRV}/GLSL.ext.KHR.h",
-        "%{IncludeDir.SPIRV}/GlslangToSpv.h",
-        "%{IncludeDir.SPIRV}/hex_float.h",
-        "%{IncludeDir.SPIRV}/Logger.h",
-        "%{IncludeDir.SPIRV}/SpvBuilder.h",
-        "%{IncludeDir.SPIRV}/spvIR.h",
-        "%{IncludeDir.SPIRV}/doc.h",
-        "%{IncludeDir.SPIRV}/SpvTools.h",
-        "%{IncludeDir.SPIRV}/disassemble.h"
+        "GlslangToSpv.cpp",
+        "InReadableOrder.cpp",
+        "Logger.cpp",
+        "SpvBuilder.cpp",
+        "SpvPostProcess.cpp",
+        "doc.cpp",
+        "SpvTools.cpp",
+        "disassemble.cpp",
+        "bitutils.h",
+        "spirv.hpp",
+        "GLSL.std.450.h",
+        "GLSL.ext.EXT.h",
+        "GLSL.ext.KHR.h",
+        "GlslangToSpv.h",
+        "hex_float.h",
+        "Logger.h",
+        "SpvBuilder.h",
+        "spvIR.h",
+        "doc.h",
+        "SpvTools.h",
+        "disassemble.h"
     }
 
     defines
@@ -81,11 +81,11 @@ project "SPVRemapper"
     
     files
     {
-        "%{IncludeDir.SPIRV}/GlslangToSpv.cpp",
-        "%{IncludeDir.SPIRV}/SPVRemapper.cpp",
-        "%{IncludeDir.SPIRV}/doc.cpp",
-        "%{IncludeDir.SPIRV}/SPVRemapper.h",
-        "%{IncludeDir.SPIRV}/doc.h"
+        "GlslangToSpv.cpp",
+        "SPVRemapper.cpp",
+        "doc.cpp",
+        "SPVRemapper.h",
+        "doc.h"
     }
     
     defines

@@ -12,8 +12,8 @@ project "OSDependent"
     filter "system:windows"
       files
       {
-        "%{IncludeDir.OSDEPENDENT}/Windows/ossource.cpp",
-        "%{IncludeDir.OSDEPENDENT}/osinclude.h"
+        "ossource.cpp",
+        "../osinclude.h"
       }
 
       defines

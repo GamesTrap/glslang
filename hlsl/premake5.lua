@@ -11,21 +11,21 @@ project "HLSL"
 
     files
     {
-        "%{IncludeDir.HLSL}/hlslAttributes.cpp",
-        "%{IncludeDir.HLSL}/hlslParseHelper.cpp",
-        "%{IncludeDir.HLSL}/hlslScanContext.cpp",
-        "%{IncludeDir.HLSL}/hlslOpMap.cpp",
-        "%{IncludeDir.HLSL}/hlslTokenStream.cpp",
-        "%{IncludeDir.HLSL}/hlslGrammar.cpp",
-        "%{IncludeDir.HLSL}/hlslParseables.cpp",
-        "%{IncludeDir.HLSL}/hlslAttributes.h",
-        "%{IncludeDir.HLSL}/hlslParseHelper.h",
-        "%{IncludeDir.HLSL}/hlslTokens.h",
-        "%{IncludeDir.HLSL}/hlslScanContext.h",
-        "%{IncludeDir.HLSL}/hlslOpMap.h",
-        "%{IncludeDir.HLSL}/hlslTokenStream.h",
-        "%{IncludeDir.HLSL}/hlslGrammar.h",
-        "%{IncludeDir.HLSL}/hlslParseables.h"
+        "hlslAttributes.cpp",
+        "hlslParseHelper.cpp",
+        "hlslScanContext.cpp",
+        "hlslOpMap.cpp",
+        "hlslTokenStream.cpp",
+        "hlslGrammar.cpp",
+        "hlslParseables.cpp",
+        "hlslAttributes.h",
+        "hlslParseHelper.h",
+        "hlslTokens.h",
+        "hlslScanContext.h",
+        "hlslOpMap.h",
+        "hlslTokenStream.h",
+        "hlslGrammar.h",
+        "hlslParseables.h"
     }
 
     defines
