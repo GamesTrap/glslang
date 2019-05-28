@@ -1,8 +1,8 @@
 include "Dependencies/glslang/hlsl"
+include "Dependencies/glslang/OGLCompilersDLL"
 
 filter "system:windows"
     include "Dependencies/glslang/glslang/OSDependent/Windows"
-    include "Dependencies/glslang/OGLCompilersDLL"
 
 filter "system:linux"
     include "Dependencies/glslang/glslang/OSDependent/Unix"
@@ -89,13 +89,15 @@ project "glslang"
     includedirs
     {
         "%{IncludeDir.OSDEPENDENT}",
-        "%{IncludeDir.HLSL}"
+        "%{IncludeDir.HLSL}",
+        "%{IncludeDir.OGLCOMPILER}"
     }
 
     links
     {
         "HLSL",
-        "OSDependent"
+        "OSDependent",
+        "OGLCompiler"
     }
 
     filter "system:windows"
@@ -106,16 +108,6 @@ project "glslang"
             "GLSLANG_OSINCLUDE_WIN32=true",
             "ENABLE_OPT=false",
             "ENABLE_HLSL=true"
-        }
-
-        includedirs
-        {
-            "%{IncludeDir.OGLCOMPILER}"
-        }
-
-        links
-        {
-            "OGLCompiler"
         }
 
     filter "system:linux"      
