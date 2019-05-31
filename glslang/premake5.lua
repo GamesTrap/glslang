@@ -7,9 +7,6 @@ filter "system:windows"
 filter "system:linux"
     include "Dependencies/glslang/glslang/OSDependent/Unix"
 
-filter "system:macosx"
-    include "Dependencies/glslang/glslang/OSDependent/Unix"
-
 project "glslang"
     kind "StaticLib"
     language "C++"
@@ -87,20 +84,29 @@ project "glslang"
     }
 
     includedirs
-    {
-        "%{IncludeDir.OSDEPENDENT}",
+    {        
         "%{IncludeDir.HLSL}",
         "%{IncludeDir.OGLCOMPILER}"
     }
 
+
     links
     {
         "HLSL",
-        "OSDependent",
         "OGLCompiler"
     }
 
     filter "system:windows"
+        includedirs
+        {
+            "%{IncludeDir.OSDEPENDENT}"
+        }
+
+        links
+        {
+            "OSDependent"
+        }
+
         defines
         {
             "AMD_EXTENSIONS=true",
@@ -110,7 +116,17 @@ project "glslang"
             "ENABLE_HLSL=true"
         }
 
-    filter "system:linux"      
+    filter "system:linux"
+        includedirs
+        {
+            "%{IncludeDir.OSDEPENDENT}"
+        }
+
+        links
+        {
+            "OSDependent"
+        }
+
         defines
         {
             "AMD_EXTENSIONS=true",

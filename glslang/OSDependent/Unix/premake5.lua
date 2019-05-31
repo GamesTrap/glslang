@@ -28,27 +28,7 @@ project "OSDependent"
         "GLSLANG_OSINCLUDE_UNIX=true",
         "ENABLE_OPT=false",
         "ENABLE_HLSL=true"
-      }   
-
-    filter "system:macosx"
-      files
-      {
-        "Unix/ossource.cpp",
-        "osinclude.h"
-      }
-
-      links
-      {
-        "pthread"
-      }
-
-      defines
-      {
-        "AMD_EXTENSIONS=true",
-        "NV_EXTENSIONS=true",
-        "GLSLANG_OSINCLUDE_UNIX=true",
-        "ENABLE_OPT=false"
-      }   
+      }  
 
     filter "configurations:Debug"
 		runtime "Debug"
