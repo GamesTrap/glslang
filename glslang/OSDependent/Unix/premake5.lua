@@ -9,26 +9,25 @@ project "OSDependent"
     targetdir ("../../../../../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("../../../../../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 
-    filter "system:linux"
-      files
-      {
-        "ossource.cpp",
-        "../osinclude.h"
-      }
+    files
+    {
+      "ossource.cpp",
+      "../osinclude.h"
+    }
 
-      links
-      {
-        "pthread"
-      }
+    links
+    {
+      "pthread"
+    }
 
-      defines
-      {
-        "AMD_EXTENSIONS=true",
-        "NV_EXTENSIONS=true",
-        "GLSLANG_OSINCLUDE_UNIX=true",
-        "ENABLE_OPT=false",
-        "ENABLE_HLSL=true"
-      }  
+    defines
+    {
+      "AMD_EXTENSIONS=true",
+      "NV_EXTENSIONS=true",
+      "GLSLANG_OSINCLUDE_UNIX=true",
+      "ENABLE_OPT=false",
+      "ENABLE_HLSL=true"
+    }  
 
     filter "configurations:Debug"
 		runtime "Debug"

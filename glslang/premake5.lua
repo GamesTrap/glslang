@@ -7,6 +7,9 @@ filter "system:windows"
 filter "system:linux"
     include "Dependencies/glslang/glslang/OSDependent/Unix"
 
+filter "system:macosx"
+    include "Dependencies/glslang/glslang/OSDependent/Unix"
+
 project "glslang"
     kind "StaticLib"
     language "C++"
