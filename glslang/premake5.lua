@@ -1,14 +1,14 @@
-include "Dependencies/glslang/hlsl"
-include "Dependencies/glslang/OGLCompilersDLL"
+include "Dependencies/GLSLang/hlsl"
+include "Dependencies/GLSLang/OGLCompilersDLL"
 
 filter "system:windows"
-    include "Dependencies/glslang/glslang/OSDependent/Windows"
+    include "Dependencies/GLSLang/glslang/OSDependent/Windows"
 
 filter "system:linux"
-    include "Dependencies/glslang/glslang/OSDependent/Unix"
+    include "Dependencies/GLSLang/glslang/OSDependent/Unix"
 
 filter "system:macosx"
-    include "Dependencies/glslang/glslang/OSDependent/Unix"
+    include "Dependencies/GLSLang/glslang/OSDependent/Unix"
 
 project "glslang"
     kind "StaticLib"
