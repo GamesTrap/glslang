@@ -11,8 +11,7 @@ project "StandAlone"
 
     files
     {
-        "StandAlone.cpp",
-        "spirv-remap.cpp",
+        "StandAlone.cpp"
         "ResourceLimits.cpp",
         "DirStackFileIncluder.h",
         "ResourceLimits.h",
