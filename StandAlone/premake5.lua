@@ -11,7 +11,7 @@ project "StandAlone"
 
     files
     {
-        "StandAlone.cpp"
+        "StandAlone.cpp",
         "ResourceLimits.cpp",
         "DirStackFileIncluder.h",
         "ResourceLimits.h",
