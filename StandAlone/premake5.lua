@@ -24,7 +24,8 @@ project "StandAlone"
         "NV_EXTENSIONS=true",
         "GLSLANG_OSINCLUDE_WIN32=true",
         "ENABLE_OPT=false",
-        "ENABLE_HLSL=true"
+        "ENABLE_HLSL=true",
+        "_CRT_SECURE_NO_WARNINGS"
     }
 
     links

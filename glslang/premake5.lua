@@ -111,7 +111,8 @@ project "glslang"
             "NV_EXTENSIONS=true",
             "GLSLANG_OSINCLUDE_WIN32=true",
             "ENABLE_OPT=false",
-            "ENABLE_HLSL=true"
+            "ENABLE_HLSL=true",
+            "_CRT_SECURE_NO_WARNINGS"
         }
 
     filter "system:linux"
@@ -126,7 +127,8 @@ project "glslang"
             "NV_EXTENSIONS=true",
             "GLSLANG_OSINCLUDE_UNIX=true",
             "ENABLE_OPT=false",
-            "ENABLE_HLSL=true"
+            "ENABLE_HLSL=true",
+            "_CRT_SECURE_NO_WARNINGS"
         }   
 
     filter "system:macosx"
@@ -136,7 +138,8 @@ project "glslang"
                 "NV_EXTENSIONS=true",
                 "GLSLANG_OSINCLUDE_UNIX=true",
                 "ENABLE_OPT=false",
-                "ENABLE_HLSL=true"
+                "ENABLE_HLSL=true",
+                "_CRT_SECURE_NO_WARNINGS"
             }
 
     filter "configurations:Debug"
