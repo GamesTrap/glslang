@@ -16,7 +16,6 @@ project "glslang"
     systemversion "latest"
     staticruntime "on"
     cppdialect "C++17"
-    pic "on"
 
     targetdir ("../../../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("../../../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
