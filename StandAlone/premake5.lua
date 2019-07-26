@@ -10,7 +10,6 @@ project "StandAlone"
 
     files
     {
-        "StandAlone.cpp",
         "ResourceLimits.cpp",
         "DirStackFileIncluder.h",
         "ResourceLimits.h",
@@ -21,7 +20,6 @@ project "StandAlone"
     {
         "AMD_EXTENSIONS=true",
         "NV_EXTENSIONS=true",
-        "GLSLANG_OSINCLUDE_WIN32=true",
         "ENABLE_OPT=false",
         "ENABLE_HLSL=true",
         "_CRT_SECURE_NO_WARNINGS"
@@ -33,10 +31,23 @@ project "StandAlone"
         "GLSLANG",
     }
 
+    filter "system:windows"
+        defines
+        {
+            "GLSLANG_OSINCLUDE_WIN32=true",
+            "GLSLANG_OSINCLUDE_UNIX=false"
+        }
+
     filter "system:linux"
+        defines
+        {
+            "GLSLANG_OSINCLUDE_WIN32=false",
+            "GLSLANG_OSINCLUDE_UNIX=true"
+        }
+
         links
         {
-            "pthread"
+            "pthread"            
         }
 
     filter "configurations:Debug"
