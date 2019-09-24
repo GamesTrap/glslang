@@ -1195,6 +1195,7 @@ struct TShaderQualifiers {
     TVertexOrder order;
     bool pointMode;
     int localSize[3];         // compute shader
+    bool localSizeNotDefault[3];        // compute shader
     int localSizeSpecId[3];   // compute shader specialization id for gl_WorkGroupSize
 #ifndef GLSLANG_WEB
     bool earlyFragmentTests;  // fragment input
@@ -1225,6 +1226,9 @@ struct TShaderQualifiers {
         localSize[0] = 1;
         localSize[1] = 1;
         localSize[2] = 1;
+        localSizeNotDefault[0] = false;
+        localSizeNotDefault[1] = false;
+        localSizeNotDefault[2] = false;
         localSizeSpecId[0] = TQualifier::layoutNotSet;
         localSizeSpecId[1] = TQualifier::layoutNotSet;
         localSizeSpecId[2] = TQualifier::layoutNotSet;
@@ -1271,6 +1275,9 @@ struct TShaderQualifiers {
         for (int i = 0; i < 3; ++i) {
             if (src.localSize[i] > 1)
                 localSize[i] = src.localSize[i];
+        }
+        for (int i = 0; i < 3; ++i) {
+            localSizeNotDefault[i] = src.localSizeNotDefault[i] || localSizeNotDefault[i];
         }
         for (int i = 0; i < 3; ++i) {
             if (src.localSizeSpecId[i] != TQualifier::layoutNotSet)
@@ -1661,6 +1668,8 @@ public:
     virtual bool isImage()   const { return basicType == EbtSampler && getSampler().isImage(); }
     virtual bool isSubpass() const { return basicType == EbtSampler && getSampler().isSubpass(); }
     virtual bool isTexture() const { return basicType == EbtSampler && getSampler().isTexture(); }
+    // Check the block-name convention of creating a block without populating it's members:
+    virtual bool isUnusableName() const { return isStruct() && structure == nullptr; }
     virtual bool isParameterized()  const { return typeParameters != nullptr; }
 #ifdef GLSLANG_WEB
     bool isAtomic() const { return false; }
