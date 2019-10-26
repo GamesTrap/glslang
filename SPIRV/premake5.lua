@@ -4,6 +4,7 @@ project "SPIRV"
     systemversion "latest"
     staticruntime "on"
     cppdialect "C++17"
+    warnings "off"
 
     targetdir ("../../../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("../../../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -73,6 +74,7 @@ project "SPVRemapper"
     systemversion "latest"
     staticruntime "on"
     cppdialect "C++17"
+    warnings "off"
     
     targetdir ("../../../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("../../../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")

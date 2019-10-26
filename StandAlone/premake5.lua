@@ -4,6 +4,7 @@ project "StandAlone"
     systemversion "latest"
     staticruntime "on"
     cppdialect "C++17"
+    warnings "off"
 
     targetdir ("../../../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("../../../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
