@@ -80,25 +80,6 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     bool      image : 1;  // image, combined should be false
     bool   combined : 1;  // true means texture is combined with a sampler, false means texture with no sampler
     bool    sampler : 1;  // true means a pure sampler, other fields should be clear()
-#ifdef ENABLE_HLSL
-    unsigned int vectorSize : 3;  // vector return type size.
-    unsigned int getVectorSize() const { return vectorSize; }
-    void clearReturnStruct() { structReturnIndex = noReturnStruct; }
-    bool hasReturnStruct() const { return structReturnIndex != noReturnStruct; }
-    unsigned getStructReturnIndex() const { return structReturnIndex; }
-
-    static const unsigned structReturnIndexBits = 4;                        // number of index bits to use.
-    static const unsigned structReturnSlots = (1<<structReturnIndexBits)-1; // number of valid values
-    static const unsigned noReturnStruct = structReturnSlots;               // value if no return struct type.
-
-    // Index into a language specific table of texture return structures.
-    unsigned int structReturnIndex : structReturnIndexBits;
-#else
-    unsigned int getVectorSize() const { return 4; }
-    void clearReturnStruct() const { }
-    bool hasReturnStruct() const { return false; }
-    unsigned getStructReturnIndex() const { return 0; }
-#endif
 
 #ifdef GLSLANG_WEB
     bool is1D()          const { return false; }
@@ -113,10 +94,24 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
     void setExternal(bool e) { }
     bool isYuv()         const { return false; }
 #else
-    bool   external : 1;  // GL_OES_EGL_image_external
-    bool        yuv : 1;  // GL_EXT_YUV_target
+    unsigned int vectorSize : 3;  // vector return type size.
     // Some languages support structures as sample results.  Storing the whole structure in the
     // TSampler is too large, so there is an index to a separate table.
+    static const unsigned structReturnIndexBits = 4;                        // number of index bits to use.
+    static const unsigned structReturnSlots = (1<<structReturnIndexBits)-1; // number of valid values
+    static const unsigned noReturnStruct = structReturnSlots;               // value if no return struct type.
+    // Index into a language specific table of texture return structures.
+    unsigned int structReturnIndex : structReturnIndexBits;
+
+    bool   external : 1;  // GL_OES_EGL_image_external
+    bool        yuv : 1;  // GL_EXT_YUV_target
+
+#ifdef ENABLE_HLSL
+    unsigned int getVectorSize() const { return vectorSize; }
+    void clearReturnStruct() { structReturnIndex = noReturnStruct; }
+    bool hasReturnStruct() const { return structReturnIndex != noReturnStruct; }
+    unsigned getStructReturnIndex() const { return structReturnIndex; }
+#endif
 
     bool is1D()          const { return dim == Esd1D; }
     bool isBuffer()      const { return dim == EsdBuffer; }
@@ -227,9 +222,12 @@ struct TSampler {   // misnomer now; includes images, textures without sampler, 
             isCombined() == right.isCombined() &&
          isPureSampler() == right.isPureSampler() &&
             isExternal() == right.isExternal() &&
-                 isYuv() == right.isYuv() &&
-         getVectorSize() == right.getVectorSize() &&
-  getStructReturnIndex() == right.getStructReturnIndex();
+                 isYuv() == right.isYuv()
+#ifdef ENABLE_HLSL
+      && getVectorSize() == right.getVectorSize() &&
+  getStructReturnIndex() == right.getStructReturnIndex()
+#endif
+        ;
     }
 
     bool operator!=(const TSampler& right) const

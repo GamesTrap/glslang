@@ -41,7 +41,8 @@ set(SOURCES
     MachineIndependent/preprocessor/PpTokens.cpp
     MachineIndependent/propagateNoContraction.cpp
     GenericCodeGen/CodeGen.cpp
-    GenericCodeGen/Link.cpp)
+    GenericCodeGen/Link.cpp
+    CInterface/glslang_c_interface.cpp)
 
 set(HEADERS
     Public/ShaderLang.h
@@ -49,6 +50,8 @@ set(HEADERS
     Include/BaseTypes.h
     Include/Common.h
     Include/ConstantUnion.h
+    Include/glslang_c_interface.h
+    Include/glslang_c_shader_types.h
     Include/InfoSink.h
     Include/InitializeGlobals.h
     Include/intermediate.h
@@ -112,7 +115,7 @@ if(ENABLE_GLSLANG_INSTALL)
         install(TARGETS glslang EXPORT glslangTargets
                 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif()
-	install(EXPORT glslangTargets DESTINATION lib/cmake)
+	install(EXPORT glslangTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake)
 endif(ENABLE_GLSLANG_INSTALL)
 
 if(ENABLE_GLSLANG_INSTALL)

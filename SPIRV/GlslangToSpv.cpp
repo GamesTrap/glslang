@@ -245,7 +245,9 @@ protected:
     std::unordered_map<std::string, spv::Function*> functionMap;
     std::unordered_map<const glslang::TTypeList*, spv::Id> structMap[glslang::ElpCount][glslang::ElmCount];
     // for mapping glslang block indices to spv indices (e.g., due to hidden members):
-    std::unordered_map<const glslang::TTypeList*, std::vector<int> > memberRemapper;
+    std::unordered_map<int, std::vector<int>> memberRemapper;
+    // for mapping glslang symbol struct to symbol Id
+    std::unordered_map<const glslang::TTypeList*, int> glslangTypeToIdMap;
     std::stack<bool> breakForLoop;  // false means break for switch
     std::unordered_map<std::string, const glslang::TIntermSymbol*> counterOriginator;
     // Map pointee types for EbtReference to their forward pointers
@@ -1630,11 +1632,11 @@ void TGlslangToSpvTraverser::finishSpv()
     for (auto it = iOSet.cbegin(); it != iOSet.cend(); ++it)
         entryPoint->addIdOperand(*it);
 
-#ifndef GLSLANG_WEB
-    // Add capabilities, extensions, remove unneeded decorations, etc., 
+    // Add capabilities, extensions, remove unneeded decorations, etc.,
     // based on the resulting SPIR-V.
+    // Note: WebGPU code generation must have the opportunity to aggressively
+    // prune unreachable merge blocks and continue targets.
     builder.postProcess();
-#endif
 }
 
 // Write the SPV into 'out'.
@@ -1661,6 +1663,9 @@ void TGlslangToSpvTraverser::dumpSpv(std::vector<unsigned int>& out)
 void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
 {
     SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
+    if (symbol->getType().isStruct())
+        glslangTypeToIdMap[symbol->getType().getStruct()] = symbol->getId();
+
     if (symbol->getType().getQualifier().isSpecConstant())
         spec_constant_op_mode_setter.turnOnSpecConstantOpMode();
 
@@ -1753,6 +1758,12 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
 bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::TIntermBinary* node)
 {
     builder.setLine(node->getLoc().line, node->getLoc().getFilename());
+    if (node->getLeft()->getAsSymbolNode() != nullptr && node->getLeft()->getType().isStruct()) {
+        glslangTypeToIdMap[node->getLeft()->getType().getStruct()] = node->getLeft()->getAsSymbolNode()->getId();
+    }
+    if (node->getRight()->getAsSymbolNode() != nullptr && node->getRight()->getType().isStruct()) {
+        glslangTypeToIdMap[node->getRight()->getType().getStruct()] = node->getRight()->getAsSymbolNode()->getId();
+    }
 
     SpecConstantOpModeGuard spec_constant_op_mode_setter(&builder);
     if (node->getType().getQualifier().isSpecConstant())
@@ -1857,9 +1868,12 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                 {
                     // This may be, e.g., an anonymous block-member selection, which generally need
                     // index remapping due to hidden members in anonymous blocks.
-                    std::vector<int>& remapper = memberRemapper[node->getLeft()->getType().getStruct()];
-                    assert(remapper.size() > 0);
-                    spvIndex = remapper[glslangIndex];
+                    int glslangId = glslangTypeToIdMap[node->getLeft()->getType().getStruct()];
+                    if (memberRemapper.find(glslangId) != memberRemapper.end()) {
+                        std::vector<int>& remapper = memberRemapper[glslangId];
+                        assert(remapper.size() > 0);
+                        spvIndex = remapper[glslangIndex];
+                    }
                 }
 
                 // normal case for indexing array or structure or block
@@ -2606,6 +2620,17 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         builder.addExtension("SPV_KHR_shader_atomic_counter_ops");
         builder.addCapability(spv::CapabilityAtomicStorageOps);
         atomic = true;
+        break;
+
+    case glslang::EOpAbsDifference:
+    case glslang::EOpAddSaturate:
+    case glslang::EOpSubSaturate:
+    case glslang::EOpAverage:
+    case glslang::EOpAverageRounded:
+    case glslang::EOpMul32x16:
+        builder.addCapability(spv::CapabilityIntegerFunctions2INTEL);
+        builder.addExtension("SPV_INTEL_shader_integer_functions2");
+        binOp = node->getOp();
         break;
 
     case glslang::EOpIgnoreIntersectionNV:
@@ -3472,7 +3497,7 @@ spv::Id TGlslangToSpvTraverser::convertGlslangToSpvType(const glslang::TType& ty
 
             // else, we haven't seen it...
             if (type.getBasicType() == glslang::EbtBlock)
-                memberRemapper[glslangMembers].resize(glslangMembers->size());
+                memberRemapper[glslangTypeToIdMap[glslangMembers]].resize(glslangMembers->size());
             spvType = convertGlslangStructToSpvType(type, glslangMembers, explicitLayout, qualifier);
         }
         break;
@@ -3608,15 +3633,15 @@ spv::Id TGlslangToSpvTraverser::convertGlslangStructToSpvType(const glslang::TTy
         if (glslangMember.hiddenMember()) {
             ++memberDelta;
             if (type.getBasicType() == glslang::EbtBlock)
-                memberRemapper[glslangMembers][i] = -1;
+                memberRemapper[glslangTypeToIdMap[glslangMembers]][i] = -1;
         } else {
             if (type.getBasicType() == glslang::EbtBlock) {
                 if (filterMember(glslangMember)) {
                     memberDelta++;
-                    memberRemapper[glslangMembers][i] = -1;
+                    memberRemapper[glslangTypeToIdMap[glslangMembers]][i] = -1;
                     continue;
                 }
-                memberRemapper[glslangMembers][i] = i - memberDelta;
+                memberRemapper[glslangTypeToIdMap[glslangMembers]][i] = i - memberDelta;
             }
             // modify just this child's view of the qualifier
             glslang::TQualifier memberQualifier = glslangMember.getQualifier();
@@ -3674,7 +3699,7 @@ void TGlslangToSpvTraverser::decorateStructType(const glslang::TType& type,
         glslang::TType& glslangMember = *(*glslangMembers)[i].type;
         int member = i;
         if (type.getBasicType() == glslang::EbtBlock) {
-            member = memberRemapper[glslangMembers][i];
+            member = memberRemapper[glslangTypeToIdMap[glslangMembers]][i];
             if (filterMember(glslangMember))
                 continue;
         }
@@ -5231,6 +5256,30 @@ spv::Id TGlslangToSpvTraverser::createBinaryOperation(glslang::TOperator op, OpD
         binOp = spv::OpLogicalNotEqual;
         break;
 
+    case glslang::EOpAbsDifference:
+        binOp = isUnsigned ? spv::OpAbsUSubINTEL : spv::OpAbsISubINTEL;
+        break;
+
+    case glslang::EOpAddSaturate:
+        binOp = isUnsigned ? spv::OpUAddSatINTEL : spv::OpIAddSatINTEL;
+        break;
+
+    case glslang::EOpSubSaturate:
+        binOp = isUnsigned ? spv::OpUSubSatINTEL : spv::OpISubSatINTEL;
+        break;
+
+    case glslang::EOpAverage:
+        binOp = isUnsigned ? spv::OpUAverageINTEL : spv::OpIAverageINTEL;
+        break;
+
+    case glslang::EOpAverageRounded:
+        binOp = isUnsigned ? spv::OpUAverageRoundedINTEL : spv::OpIAverageRoundedINTEL;
+        break;
+
+    case glslang::EOpMul32x16:
+        binOp = isUnsigned ? spv::OpUMul32x16INTEL : spv::OpIMul32x16INTEL;
+        break;
+
     case glslang::EOpLessThan:
     case glslang::EOpGreaterThan:
     case glslang::EOpLessThanEqual:
@@ -5743,6 +5792,18 @@ spv::Id TGlslangToSpvTraverser::createUnaryOperation(glslang::TOperator op, OpDe
             libCall = spv::GLSLstd450FindUMsb;
         else
             libCall = spv::GLSLstd450FindSMsb;
+        break;
+
+    case glslang::EOpCountLeadingZeros:
+        builder.addCapability(spv::CapabilityIntegerFunctions2INTEL);
+        builder.addExtension("SPV_INTEL_shader_integer_functions2");
+        unaryOp = spv::OpUCountLeadingZerosINTEL;
+        break;
+
+    case glslang::EOpCountTrailingZeros:
+        builder.addCapability(spv::CapabilityIntegerFunctions2INTEL);
+        builder.addExtension("SPV_INTEL_shader_integer_functions2");
+        unaryOp = spv::OpUCountTrailingZerosINTEL;
         break;
 
     case glslang::EOpBallot:
@@ -7435,7 +7496,7 @@ spv::Id TGlslangToSpvTraverser::createMiscOperation(glslang::TOperator op, spv::
         id = builder.createCompositeExtract(mulOp, typeId, 0);
         for (int i = 1; i < componentCount; ++i) {
             builder.setPrecision(id, precision);
-            id = builder.createBinOp(spv::OpIAdd, typeId, id, builder.createCompositeExtract(operands[0], typeId, i));
+            id = builder.createBinOp(spv::OpIAdd, typeId, id, builder.createCompositeExtract(mulOp, typeId, i));
         }
     } else {
         switch (consumedOperands) {
@@ -8197,7 +8258,8 @@ int GetSpirvGeneratorVersion()
     // return 5; // make OpArrayLength result type be an int with signedness of 0
     // return 6; // revert version 5 change, which makes a different (new) kind of incorrect code,
                  // versions 4 and 6 each generate OpArrayLength as it has long been done
-    return 7; // GLSL volatile keyword maps to both SPIR-V decorations Volatile and Coherent
+    // return 7; // GLSL volatile keyword maps to both SPIR-V decorations Volatile and Coherent
+    return 8; // switch to new dead block eliminator; use OpUnreachable
 }
 
 // Write SPIR-V out to a binary file
