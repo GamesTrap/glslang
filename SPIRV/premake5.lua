@@ -45,7 +45,8 @@ project "SPIRV"
 
     includedirs
     {
-        "%{IncludeDir.GLSLANG}"
+        "%{IncludeDir.GLSLANG}",
+        "../"
     }
 
     links
