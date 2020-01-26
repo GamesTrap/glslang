@@ -88,6 +88,12 @@ project "SPVRemapper"
         "SPVRemapper.h",
         "doc.h"
     }
+
+    includedirs
+    {
+        "%{IncludeDir.GLSLANG}",
+        "../"
+    }
     
     defines
     {
