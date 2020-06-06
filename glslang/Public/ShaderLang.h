@@ -68,7 +68,7 @@
 // This should always increase, as some paths to do not consume
 // a more major number.
 // It should increment by one when new functionality is added.
-#define GLSLANG_MINOR_VERSION 13
+#define GLSLANG_MINOR_VERSION 14
 
 //
 // Call before doing any other compiler/linker operations.
@@ -92,30 +92,42 @@ typedef enum {
     EShLangGeometry,
     EShLangFragment,
     EShLangCompute,
-    EShLangRayGenNV,
-    EShLangIntersectNV,
-    EShLangAnyHitNV,
-    EShLangClosestHitNV,
-    EShLangMissNV,
-    EShLangCallableNV,
+    EShLangRayGen,
+    EShLangRayGenNV = EShLangRayGen,
+    EShLangIntersect,
+    EShLangIntersectNV = EShLangIntersect,
+    EShLangAnyHit,
+    EShLangAnyHitNV = EShLangAnyHit,
+    EShLangClosestHit,
+    EShLangClosestHitNV = EShLangClosestHit,
+    EShLangMiss,
+    EShLangMissNV = EShLangMiss,
+    EShLangCallable,
+    EShLangCallableNV = EShLangCallable,
     EShLangTaskNV,
     EShLangMeshNV,
     LAST_ELEMENT_MARKER(EShLangCount),
 } EShLanguage;         // would be better as stage, but this is ancient now
 
-typedef enum {
+typedef enum : unsigned {
     EShLangVertexMask         = (1 << EShLangVertex),
     EShLangTessControlMask    = (1 << EShLangTessControl),
     EShLangTessEvaluationMask = (1 << EShLangTessEvaluation),
     EShLangGeometryMask       = (1 << EShLangGeometry),
     EShLangFragmentMask       = (1 << EShLangFragment),
     EShLangComputeMask        = (1 << EShLangCompute),
-    EShLangRayGenNVMask       = (1 << EShLangRayGenNV),
-    EShLangIntersectNVMask    = (1 << EShLangIntersectNV),
-    EShLangAnyHitNVMask       = (1 << EShLangAnyHitNV),
-    EShLangClosestHitNVMask   = (1 << EShLangClosestHitNV),
-    EShLangMissNVMask         = (1 << EShLangMissNV),
-    EShLangCallableNVMask     = (1 << EShLangCallableNV),
+    EShLangRayGenMask         = (1 << EShLangRayGen),
+    EShLangRayGenNVMask       = EShLangRayGenMask,
+    EShLangIntersectMask      = (1 << EShLangIntersect),
+    EShLangIntersectNVMask    = EShLangIntersectMask,
+    EShLangAnyHitMask         = (1 << EShLangAnyHit),
+    EShLangAnyHitNVMask       = EShLangAnyHitMask,
+    EShLangClosestHitMask     = (1 << EShLangClosestHit),
+    EShLangClosestHitNVMask   = EShLangClosestHitMask,
+    EShLangMissMask           = (1 << EShLangMiss),
+    EShLangMissNVMask         = EShLangMissMask,
+    EShLangCallableMask       = (1 << EShLangCallable),
+    EShLangCallableNVMask     = EShLangCallableMask,
     EShLangTaskNVMask         = (1 << EShLangTaskNV),
     EShLangMeshNVMask         = (1 << EShLangMeshNV),
     LAST_ELEMENT_MARKER(EShLanguageMaskCount),
@@ -228,7 +240,7 @@ typedef enum {
 //
 // Message choices for what errors and warnings are given.
 //
-enum EShMessages {
+enum EShMessages : unsigned {
     EShMsgDefault          = 0,         // default is to give all required errors and extra warnings
     EShMsgRelaxedErrors    = (1 << 0),  // be liberal in accepting input
     EShMsgSuppressWarnings = (1 << 1),  // suppress all warnings, except those required by the specification
@@ -243,7 +255,7 @@ enum EShMessages {
     EShMsgDebugInfo        = (1 << 10), // save debug information
     EShMsgHlslEnable16BitTypes  = (1 << 11), // enable use of 16-bit types in SPIR-V for HLSL
     EShMsgHlslLegalization  = (1 << 12), // enable HLSL Legalization messages
-    EShMsgHlslDX9Compatible = (1 << 13), // enable HLSL DX9 compatible mode (right now only for samplers)
+    EShMsgHlslDX9Compatible = (1 << 13), // enable HLSL DX9 compatible mode (for samplers and semantics)
     EShMsgBuiltinSymbolTable = (1 << 14), // print the builtin symbol table
     LAST_ELEMENT_MARKER(EShMsgCount),
 };
@@ -252,13 +264,16 @@ enum EShMessages {
 // Options for building reflection
 //
 typedef enum {
-    EShReflectionDefault           = 0,        // default is original behaviour before options were added
-    EShReflectionStrictArraySuffix = (1 << 0), // reflection will follow stricter rules for array-of-structs suffixes
-    EShReflectionBasicArraySuffix  = (1 << 1), // arrays of basic types will be appended with [0] as in GL reflection
-    EShReflectionIntermediateIO    = (1 << 2), // reflect inputs and outputs to program, even with no vertex shader
-    EShReflectionSeparateBuffers   = (1 << 3), // buffer variables and buffer blocks are reflected separately
-    EShReflectionAllBlockVariables = (1 << 4), // reflect all variables in blocks, even if they are inactive
-    EShReflectionUnwrapIOBlocks    = (1 << 5), // unwrap input/output blocks the same as with uniform blocks
+    EShReflectionDefault            = 0,        // default is original behaviour before options were added
+    EShReflectionStrictArraySuffix  = (1 << 0), // reflection will follow stricter rules for array-of-structs suffixes
+    EShReflectionBasicArraySuffix   = (1 << 1), // arrays of basic types will be appended with [0] as in GL reflection
+    EShReflectionIntermediateIO     = (1 << 2), // reflect inputs and outputs to program, even with no vertex shader
+    EShReflectionSeparateBuffers    = (1 << 3), // buffer variables and buffer blocks are reflected separately
+    EShReflectionAllBlockVariables  = (1 << 4), // reflect all variables in blocks, even if they are inactive
+    EShReflectionUnwrapIOBlocks     = (1 << 5), // unwrap input/output blocks the same as with uniform blocks
+    EShReflectionAllIOVariables     = (1 << 6), // reflect all input/output variables, even if they are inactive
+    EShReflectionSharedStd140SSBO   = (1 << 7), // Apply std140/shared rules for ubo to ssbo
+    EShReflectionSharedStd140UBO    = (1 << 8), // Apply std140/shared rules for ubo to ssbo
     LAST_ELEMENT_MARKER(EShReflectionCount),
 } EShReflectionOptions;
 
@@ -400,11 +415,14 @@ enum TResourceType {
     EResCount
 };
 
+
 // Make one TShader per shader that you will link into a program. Then
 //  - provide the shader through setStrings() or setStringsWithLengths()
 //  - optionally call setEnv*(), see below for more detail
 //  - optionally use setPreamble() to set a special shader string that will be
 //    processed before all others but won't affect the validity of #version
+//  - optionally call addProcesses() for each setting/transform,
+//    see comment for class TProcesses
 //  - call parse(): source language and target environment must be selected
 //    either by correct setting of EShMessages sent to parse(), or by
 //    explicitly calling setEnv*()
@@ -639,11 +657,11 @@ protected:
     // stringNames is the optional names for all the strings. If stringNames
     // is null, then none of the strings has name. If a certain element in
     // stringNames is null, then the corresponding string does not have name.
-    const char* const* strings;
+    const char* const* strings;      // explicit code to compile, see previous comment
     const int* lengths;
     const char* const* stringNames;
-    const char* preamble;
-    int numStrings;
+    int numStrings;                  // size of the above arrays
+    const char* preamble;            // string of implicit code to compile before the explicitly provided code
 
     // a function in the source string can be renamed FROM this TO the name given in setEntryPoint.
     std::string sourceEntryPointName;
@@ -680,6 +698,7 @@ public:
     int counterIndex;
     int numMembers;
     int arrayStride;            // stride of an array variable
+    int topLevelArraySize;      // size of the top-level variable in a storage buffer member
     int topLevelArrayStride;    // stride of the top-level variable in a storage buffer member
     EShLanguageMask stages;
 
