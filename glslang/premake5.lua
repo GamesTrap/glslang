@@ -89,7 +89,8 @@ project "glslang"
     includedirs
     {        
         "%{IncludeDir.HLSL}",
-        "%{IncludeDir.OGLCOMPILER}"
+        "%{IncludeDir.OGLCOMPILER}",
+        "../"
     }
 
 

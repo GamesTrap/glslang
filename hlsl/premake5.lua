@@ -11,21 +11,21 @@ project "HLSL"
 
     files
     {
-        "hlslAttributes.cpp",
-        "hlslParseHelper.cpp",
-        "hlslScanContext.cpp",
-        "hlslOpMap.cpp",
-        "hlslTokenStream.cpp",
-        "hlslGrammar.cpp",
-        "hlslParseables.cpp",
-        "hlslAttributes.h",
-        "hlslParseHelper.h",
-        "hlslTokens.h",
-        "hlslScanContext.h",
-        "hlslOpMap.h",
-        "hlslTokenStream.h",
-        "hlslGrammar.h",
-        "hlslParseables.h"
+        "../glslang/HLSL/hlslAttributes.cpp",
+        "../glslang/HLSL/hlslParseHelper.cpp",
+        "../glslang/HLSL/hlslScanContext.cpp",
+        "../glslang/HLSL/hlslOpMap.cpp",
+        "../glslang/HLSL/hlslTokenStream.cpp",
+        "../glslang/HLSL/hlslGrammar.cpp",
+        "../glslang/HLSL/hlslParseables.cpp",
+        "../glslang/HLSL/hlslAttributes.h",
+        "../glslang/HLSL/hlslParseHelper.h",
+        "../glslang/HLSL/hlslTokens.h",
+        "../glslang/HLSL/hlslScanContext.h",
+        "../glslang/HLSL/hlslOpMap.h",
+        "../glslang/HLSL/hlslTokenStream.h",
+        "../glslang/HLSL/hlslGrammar.h",
+        "../glslang/HLSL/hlslParseables.h"
     }
 
     defines
